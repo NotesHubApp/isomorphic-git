@@ -183,7 +183,7 @@ export async function _fetch({
   // Come up with a reasonable list of oids to tell the remote we already have
   // (preferably oids that are close ancestors of the branch heads we're fetching)
   const haveRefs = singleBranch
-    ? [ref]
+    ? [ref, `${remote}/${ref}`]
     : await GitRefManager.listRefs({
         fs,
         gitdir,
