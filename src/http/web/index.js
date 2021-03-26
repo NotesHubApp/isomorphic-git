@@ -4,6 +4,18 @@ import { collect } from '../../utils/collect.js'
 import { fromStream } from '../../utils/fromStream'
 
 /**
+ * Perform fetch with retries
+ */
+async function fetchWithRetry(url, options, n = 1) {
+  try {
+    return await fetch(url, options);
+  } catch(err) {
+    if (n <= 1) throw err;
+    return await fetchWithRetry(url, options, n - 1);
+  }
+};
+
+/**
  * HttpClient
  *
  * @param {GitHttpRequest} request
@@ -20,7 +32,7 @@ export async function request({
   if (body) {
     body = await collect(body)
   }
-  const res = await fetch(url, { method, headers, body })
+  const res = await fetchWithRetry(url, { method, headers, body }, 3);
   const iter =
     res.body && res.body.getReader
       ? fromStream(res.body)
