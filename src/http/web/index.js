@@ -8,12 +8,12 @@ import { fromStream } from '../../utils/fromStream'
  */
 async function fetchWithRetry(url, options, n = 1) {
   try {
-    return await fetch(url, options);
-  } catch(err) {
-    if (n <= 1) throw err;
-    return await fetchWithRetry(url, options, n - 1);
+    return await fetch(url, options)
+  } catch (err) {
+    if (n <= 1) throw err
+    return fetchWithRetry(url, options, n - 1)
   }
-};
+}
 
 /**
  * HttpClient
@@ -32,7 +32,7 @@ export async function request({
   if (body) {
     body = await collect(body)
   }
-  const res = await fetchWithRetry(url, { method, headers, body }, 3);
+  const res = await fetchWithRetry(url, { method, headers, body }, 3)
   const iter =
     res.body && res.body.getReader
       ? fromStream(res.body)
